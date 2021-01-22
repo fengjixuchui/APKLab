@@ -11,24 +11,27 @@ The ultimate Android RE experience right inside your <a href="https://code.visua
 </h4>
 
 <p align="center">
-APKLab seamlessly integrates the best open-source tools: <a href="https://github.com/ibotpeaches/apktool/">Apktool</a>, <a href="https://github.com/skylot/jadx">Jadx</a>, <a href="https://github.com/patrickfav/uber-apk-signer">uber-apk-signer</a> and more to the excellent VS Code so you can focus on app analysis and get it done without leaving the IDE.
+APKLab seamlessly integrates the best open-source tools: <a href="https://github.com/ibotpeaches/apktool/">Apktool</a>, <a href="https://github.com/skylot/jadx">Jadx</a>, <a href="https://github.com/patrickfav/uber-apk-signer">uber-apk-signer</a>, <a href="https://github.com/shroudedcode/apk-mitm/">apk-mitm</a> and more to the excellent VS Code so you can focus on app analysis and get it done without leaving the IDE.
 </p>
 
 <p align="center">
-    <a href="https://marketplace.visualstudio.com/items?itemName=Surendrajat.apklab">
-        <img alt="Version" src="https://img.shields.io/visual-studio-marketplace/v/surendrajat.apklab?color=a69&labelColor=000">
+    <a href="https://github.com/surendrajat/apklab">
+        <img alt="Version" src="https://img.shields.io/visual-studio-marketplace/v/surendrajat.apklab?color=f0f0e0&labelColor=404752">
     </a>
     <a href="https://open-vsx.org/extension/Surendrajat/apklab">
-        <img alt="Download" src="https://img.shields.io/static/v1?label=get%20from&message=open-vsx&color=629&labelColor=000">
+        <img alt="Download" src="https://img.shields.io/static/v1?label=get%20from&message=open-vsx&color=629&labelColor=404752">
     </a>
     <a href="https://marketplace.visualstudio.com/items?itemName=Surendrajat.apklab">
-        <img alt="Installs" src="https://img.shields.io/visual-studio-marketplace/i/surendrajat.apklab?logo=visual-studio-code&logoColor=blue&labelColor=000&color=blue">
+        <img alt="Installs" src="https://img.shields.io/visual-studio-marketplace/i/surendrajat.apklab?logo=visual-studio-code&logoColor=blue&labelColor=404752&color=blue">
     </a>
-    <a href="https://github.com/Surendrajat/APKLab/actions?query=workflow%3AAPKLab">
-        <img alt="GitHub Workflow Status (master)" src="https://img.shields.io/github/workflow/status/surendrajat/apklab/APKLab/master?logo=github&labelColor=black">
+    <a href="https://github.com/Surendrajat/APKLab/actions?query=workflow%3A%22CI%22">
+        <img alt="CI" src="https://github.com/Surendrajat/APKLab/workflows/CI/badge.svg?branch=master&event=push">
     </a>
 </p>
 <p align="center">
+    <a href="https://forum.xda-developers.com/t/4109409/">
+        <img alt="XDA Developers" src="https://img.shields.io/badge/XDA%20Forums-ffb?logo=xda-developers">
+    </a>
     <a href="https://t.me/apklab_re">
         <img alt="Telegram" src="https://img.shields.io/badge/telegram-eff?logo=telegram">
     </a>
@@ -43,7 +46,9 @@ APKLab seamlessly integrates the best open-source tools: <a href="https://github
 - Disassemble the APK to Dalvik bytecode aka Smali
 - Decompile the APK to Java source
 - Analyze & Hack effectively with feature-rich VS Code
+- Apply MITM patch for HTTPS inspection
 - Build an APK from Smali and resources
+- Rebuild an APK in Debug mode for dynamic analysis
 - Sign the APK seamlessly during the build
 - Install the APK directly from VS Code
 - Support for Apktool-style projects (`apktool.yml`)
@@ -51,7 +56,7 @@ APKLab seamlessly integrates the best open-source tools: <a href="https://github
 - Android resource frameworks management (Coming soon!)
 - Support for user-provided keystore for APK signing
 - Download and configure missing dependencies
-- Excellent Smali language support with [**Smalise**](https://marketplace.visualstudio.com/items?itemName=LoyieKing.smalise)
+- Excellent Smali language support with [**Smalise**](https://github.com/LoyieKing/Smalise)
 - Supports Linux, Windows, and Mac
 
 ## Getting Started
@@ -64,27 +69,35 @@ APKLab seamlessly integrates the best open-source tools: <a href="https://github
 
 - Or Just open an existing Apktool project folder
 
+#### Apply MITM patch
+
+- Right-Click on or inside `apktool.yml` file ➜ <kbd>APKLab: Prepare for HTTPS inspection</kbd>
+
+  ![mitm.gif](https://github.com/Surendrajat/APKLab/raw/master/assets/mitm.gif)
+
 #### ReBuild and Sign APK
-  
+
 - Right-Click on or inside `apktool.yml` file ➜ <kbd>APKLab: Rebuild the APK</kbd>
 
   ![rebuild.gif](https://github.com/Surendrajat/APKLab/raw/master/assets/rebuild.gif)
 
 #### Install APK to device
-  
+
 - Right-Click on `.apk` file (in `dist` directory) ➜ <kbd>APKLab: Install the APK</kbd>
 
   ![install.gif](https://github.com/Surendrajat/APKLab/raw/master/assets/install.gif)
 
+#### Clean ApkTool frameworks dir
+
+- Open the Command Palette (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>) ➜ <kbd>APKLab: Empty ApkTool Framework Dir</kbd>
+
 ## Requirements
 
 - **JDK 8+**
-  >Run **`java -version`** in your Shell, if not found download from [here](https://adoptopenjdk.net/).
+  > Run **`java -version`** in your Shell, if not found download from [here](https://adoptopenjdk.net/).
 - **adb**
-  >Run **`adb devices`** in your Shell, if not found check [this guide](https://www.xda-developers.com/install-adb-windows-macos-linux/).
 
-- [**Smalise**](https://marketplace.visualstudio.com/items?itemName=LoyieKing.smalise) (recommended)
-  >It makes working with `smali` files a breeze.
+  > Run **`adb devices`** in your Shell, if not found check [this guide](https://www.xda-developers.com/install-adb-windows-macos-linux/).
 
 ## Extension Settings
 
@@ -100,7 +113,7 @@ APKLab seamlessly integrates the best open-source tools: <a href="https://github
   `"apklab.apkSignerPath": "/home/oozer/downloads/uber-apk-signer-1.1.0.jar"`
 
 - **`apklab.jadxDirPath`**: Full Path of `jadx-x.y.z` dir. If you want to use a different version of it, change it like:
-  
+
   `"apklab.jadxDirPath": "/home/oozer/downloads/jadx-1.1.0"`
 
 </details>
@@ -123,14 +136,16 @@ APKLab seamlessly integrates the best open-source tools: <a href="https://github
 
 ## Contribution Guide
 
-  For bug reports, feature requests or simply discussing an idea, please open an issue [here](https://github.com/Surendrajat/APKLab/issues). PRs are always welcome.
+For bug reports, feature requests or simply discussing an idea, please open an issue [here](https://github.com/Surendrajat/APKLab/issues). PRs are always welcome.
 
 ## [Changelog](https://github.com/Surendrajat/APKLab/blob/master/CHANGELOG.md)
 
 ## Credits
 
 - [Feimaomii](https://github.com/Feimaomii) for the awesome logo
-- [Aman Sharma](https://github.com/amsharma44) for improved Windows support
+- [Aman Sharma](https://github.com/amsharma44) for active contribution
+- [Niklas Higi](https://github.com/shroudedcode) for apk-mitm
 - [iBotPeaches](https://github.com/iBotPeaches), [brutall](https://github.com/brutall) and [JesusFreke](https://github.com/JesusFreke) for Apktool & Smali
 - [patrickfav](https://github.com/patrickfav) for uber-apk-signer
 - [skylot](https://github.com/skylot) for Jadx
+- [Loyie King](https://github.com/LoyieKing) for Smalise
