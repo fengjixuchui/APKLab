@@ -7,7 +7,7 @@ const quickPickItems: { [index: string]: QuickPickItem[] } = {
     rebuildQuickPickItems: [
         {
             label: "--use-aapt2",
-            detail: "Use the aapt2 binary instead of appt",
+            detail: "Use the aapt2 binary instead of aapt",
             alwaysShow: true,
             picked: true,
         },
@@ -34,51 +34,62 @@ const quickPickItems: { [index: string]: QuickPickItem[] } = {
      */
     decodeQuickPickItems: [
         {
+            label: "quark_analysis",
+            detail:
+                "Detect potential malicious activities in APK using Quark-Engine.",
+            description: "[Use Quark-Engine]",
+        },
+        {
             label: "decompile_java",
             detail: "Decompiles APK to Java source using Jadx",
             description: "[Use Jadx]",
         },
         {
-            label: "--no-src",
+            label: "--no-src (apktool)",
             detail: "Do not decompile dex to smali (-s)",
             alwaysShow: true,
         },
         {
-            label: "--no-res",
+            label: "--no-res (apktool)",
             detail: "Do not decompile resources (-r)",
             alwaysShow: true,
         },
         {
-            label: "--force-manifest",
+            label: "--force-manifest (apktool)",
             detail:
                 "Forces decode of AndroidManifest regardless of decoding of resources flag.",
         },
         {
-            label: "--no-assets",
+            label: "--no-assets (apktool)",
             detail: "Prevents decoding/copying of unknown asset files.",
             alwaysShow: true,
         },
         {
-            label: "--only-main-classes",
+            label: "--only-main-classes (apktool)",
             detail: "Only disassemble dex classes in root (classes[0-9]*.dex)",
             picked: true,
         },
         {
-            label: "--no-debug-info",
+            label: "--no-debug-info (apktool)",
             detail:
                 "Prevents baksmali from writing out debug info (.local, .param, .line, etc). (-b)",
+        },
+        {
+            label: "--deobf (jadx)",
+            detail: "Activate deobfuscation for Jadx",
+            alwaysShow: true,
         },
     ],
 };
 
 export namespace quickPickUtil {
-    export function getQuickPickItems(catagory: string): QuickPickItem[] {
-        return quickPickItems[catagory];
+    export function getQuickPickItems(category: string): QuickPickItem[] {
+        return quickPickItems[category];
     }
 
-    export function setQuickPickDefault(catagory: string, label: string): void {
-        if (quickPickItems[catagory]) {
-            const targetOption = quickPickItems[catagory].filter(
+    export function setQuickPickDefault(category: string, label: string): void {
+        if (quickPickItems[category]) {
+            const targetOption = quickPickItems[category].filter(
                 (x) => x.label === label
             )[0];
             if (targetOption) {

@@ -1,9 +1,9 @@
 <h1 align="center">
-  <a href="https://github.com/surendrajat/apklab">
-    <img src="https://raw.githubusercontent.com/surendrajat/apklab/master/assets/icon.png" alt="APK Lab" height="96px" width="100px">
+  <a href="https://apklab.surendrajat.xyz">
+    <img src="https://raw.githubusercontent.com/APKLab/apklab/master/assets/icon.png" alt="APKLab" height="96px" width="100px">
   </a>
   <br>
-  APK Lab
+  APKLab
 </h1>
 
 <h4 align="center">
@@ -11,11 +11,11 @@ The ultimate Android RE experience right inside your <a href="https://code.visua
 </h4>
 
 <p align="center">
-APKLab seamlessly integrates the best open-source tools: <a href="https://github.com/ibotpeaches/apktool/">Apktool</a>, <a href="https://github.com/skylot/jadx">Jadx</a>, <a href="https://github.com/patrickfav/uber-apk-signer">uber-apk-signer</a>, <a href="https://github.com/shroudedcode/apk-mitm/">apk-mitm</a> and more to the excellent VS Code so you can focus on app analysis and get it done without leaving the IDE.
+APKLab seamlessly integrates the best open-source tools: <a href='https://github.com/quark-engine/quark-engine'>Quark-Engine</a>, <a href="https://github.com/ibotpeaches/apktool/">Apktool</a>, <a href="https://github.com/skylot/jadx">Jadx</a>, <a href="https://github.com/patrickfav/uber-apk-signer">uber-apk-signer</a>, <a href="https://github.com/shroudedcode/apk-mitm/">apk-mitm</a> and more to the excellent VS Code so you can focus on app analysis and get it done without leaving the IDE.
 </p>
 
 <p align="center">
-    <a href="https://github.com/surendrajat/apklab">
+    <a href="https://github.com/APKLab/APKLab">
         <img alt="Version" src="https://img.shields.io/visual-studio-marketplace/v/surendrajat.apklab?color=f0f0e0&labelColor=404752">
     </a>
     <a href="https://open-vsx.org/extension/Surendrajat/apklab">
@@ -24,8 +24,8 @@ APKLab seamlessly integrates the best open-source tools: <a href="https://github
     <a href="https://marketplace.visualstudio.com/items?itemName=Surendrajat.apklab">
         <img alt="Installs" src="https://img.shields.io/visual-studio-marketplace/i/surendrajat.apklab?logo=visual-studio-code&logoColor=blue&labelColor=404752&color=blue">
     </a>
-    <a href="https://github.com/Surendrajat/APKLab/actions?query=workflow%3A%22CI%22">
-        <img alt="CI" src="https://github.com/Surendrajat/APKLab/workflows/CI/badge.svg?branch=master&event=push">
+    <a href="https://github.com/APKLab/APKLab/actions?query=workflow%3A%22CI%22">
+        <img alt="CI" src="https://github.com/APKLab/APKLab/workflows/CI/badge.svg?branch=master&event=push">
     </a>
 </p>
 <p align="center">
@@ -45,6 +45,7 @@ APKLab seamlessly integrates the best open-source tools: <a href="https://github
 - Decode all the resources from an APK
 - Disassemble the APK to Dalvik bytecode aka Smali
 - Decompile the APK to Java source
+- Malware Analysis using Quark-Engine
 - Initialize project directory as Git repo
 - Analyze & Hack effectively with feature-rich VS Code
 - Apply MITM patch for HTTPS inspection
@@ -66,7 +67,7 @@ APKLab seamlessly integrates the best open-source tools: <a href="https://github
 
 - Open the Command Palette (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>) ➜ <kbd>APKLab: Open an APK</kbd>
 
-  ![decode.gif](https://github.com/Surendrajat/APKLab/raw/master/assets/decode.gif)
+  ![decode.gif](https://github.com/APKLab/APKLab/raw/master/assets/decode.gif)
 
 - Or Just open an existing Apktool project folder
 
@@ -74,19 +75,19 @@ APKLab seamlessly integrates the best open-source tools: <a href="https://github
 
 - Right-Click on or inside `apktool.yml` file ➜ <kbd>APKLab: Prepare for HTTPS inspection</kbd>
 
-  ![mitm.gif](https://github.com/Surendrajat/APKLab/raw/master/assets/mitm.gif)
+  ![mitm.gif](https://github.com/APKLab/APKLab/raw/master/assets/mitm.gif)
 
 #### ReBuild and Sign APK
 
 - Right-Click on or inside `apktool.yml` file ➜ <kbd>APKLab: Rebuild the APK</kbd>
 
-  ![rebuild.gif](https://github.com/Surendrajat/APKLab/raw/master/assets/rebuild.gif)
+  ![rebuild.gif](https://github.com/APKLab/APKLab/raw/master/assets/rebuild.gif)
 
 #### Install APK to device
 
 - Right-Click on `.apk` file (in `dist` directory) ➜ <kbd>APKLab: Install the APK</kbd>
 
-  ![install.gif](https://github.com/Surendrajat/APKLab/raw/master/assets/install.gif)
+  ![install.gif](https://github.com/APKLab/APKLab/raw/master/assets/install.gif)
 
 #### Clean ApkTool frameworks dir
 
@@ -95,10 +96,13 @@ APKLab seamlessly integrates the best open-source tools: <a href="https://github
 ## Requirements
 
 - **JDK 8+**
-  > Run **`java -version`** in your Shell, if not found download from [here](https://adoptopenjdk.net/).
+  > Run **`java -version`** in your Shell, if not found, download from [here](https://adoptopenjdk.net/).
 - **adb**
 
-  > Run **`adb devices`** in your Shell, if not found check [this guide](https://www.xda-developers.com/install-adb-windows-macos-linux/).
+  > Run **`adb devices`** in your Shell, if not found, check [this guide](https://www.xda-developers.com/install-adb-windows-macos-linux/).
+
+- **quark-engine >=21.01.6** (for malware analysis)
+  > Run **`quark`** in your Shell, if not found, check [official docs](https://github.com/quark-engine/quark-engine).
 
 ## Extension Settings
 
@@ -136,7 +140,7 @@ APKLab seamlessly integrates the best open-source tools: <a href="https://github
 <details>
   <summary>Additional configuration</summary>
 
-- **`apklab.initDecodedDirAsGit`**: Initialize decoded APK directory as **Git** repository.
+- **`apklab.initProjectDirAsGit`**: Initialize project output directory as **Git** repository.
 
 </details>
 
@@ -144,15 +148,16 @@ APKLab seamlessly integrates the best open-source tools: <a href="https://github
 
 ## Contribution Guide
 
-For bug reports, feature requests or simply discussing an idea, please open an issue [here](https://github.com/Surendrajat/APKLab/issues). PRs are always welcome.
+For bug reports, feature requests or simply discussing an idea, please open an issue [here](https://github.com/APKLab/APKLab/issues). PRs are always welcome.
 
-## [Changelog](https://github.com/Surendrajat/APKLab/blob/master/CHANGELOG.md)
+## [Changelog](https://github.com/APKLab/APKLab/blob/master/CHANGELOG.md)
 
 ## Credits
 
 - [Feimaomii](https://github.com/Feimaomii) for the awesome logo
 - [Aman Sharma](https://github.com/amsharma44) for active contribution
 - [Niklas Higi](https://github.com/shroudedcode) for apk-mitm
+- [Shaun Dang](https://github.com/pulorsok), [JunWei Song](https://github.com/krnick) & [KunYu Chen](https://github.com/18z) for Quark-Engine
 - [iBotPeaches](https://github.com/iBotPeaches), [brutall](https://github.com/brutall) and [JesusFreke](https://github.com/JesusFreke) for Apktool & Smali
 - [patrickfav](https://github.com/patrickfav) for uber-apk-signer
 - [skylot](https://github.com/skylot) for Jadx

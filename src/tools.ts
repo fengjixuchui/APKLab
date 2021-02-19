@@ -50,7 +50,7 @@ function getApkName(apktoolYamlPath: string) {
         return regArr && regArr.length > 0 ? regArr[0].split(": ")[1] : "";
     } catch (err) {
         outputChannel.appendLine(
-            "couldn't find apkFileName in apktool.yml: " + String(err)
+            "Couldn't find apkFileName in apktool.yml: " + String(err)
         );
         return "";
     }
@@ -139,23 +139,29 @@ function executeProcess(processOptions: ProcessOptions): Thenable<void> {
 }
 
 /**
- * Initialize a direcotry as **Git** repository.
- * @param dirPath Directory path for repository.
+ * Initialize a directory as **Git** repository.
+ * @param projectDir project output dir for decode/decompile/analysis.
  * @param commitMsg Message for initial commit.
  */
 export async function initGitDir(
-    dirPath: string,
+    projectDir: string,
     commitMsg: string
 ): Promise<void> {
+    const extensionConfig = vscode.workspace.getConfiguration(
+        extensionConfigName
+    );
+    const initializeGit = extensionConfig.get("initProjectDirAsGit");
+    if (!initializeGit) return;
     try {
         // .gitignore content
         const gitignore = "/build\n/dist\n";
         await fs.promises.writeFile(
-            path.join(dirPath, ".gitignore"),
+            path.join(projectDir, ".gitignore"),
             gitignore
         );
-        const initCmd = `cd "${dirPath}" && git init && git add -A && git commit -m "${commitMsg}"`;
-        const report = `Initializing ${dirPath} as Git repository`;
+        let initCmd = `cd "${projectDir}" && git init && git config core.safecrlf false`;
+        initCmd += ` && git add -A && git commit -q -m "${commitMsg}"`;
+        const report = `Initializing ${projectDir} as Git repository`;
         await executeProcess({
             name: "Initializing Git",
             report: report,
@@ -165,7 +171,7 @@ export async function initGitDir(
         });
     } catch (err) {
         outputChannel.appendLine(
-            `Error: Initializing decoded dir as Git repository: ${err.message}`
+            `Error: Initializing project dir as Git repository: ${err.message}`
         );
     }
 }
@@ -174,70 +180,39 @@ export namespace apktool {
     /**
      * Decodes(Disassembles) the apk resources & dalvik bytecode using **Apktool**.
      * @param apkFilePath file path Uri for apk file to decode.
+     * @param projectDir project output dir for decode/decompile/analysis.
      * @param apktoolArgs array of additional args passed to **Apktool**.
-     * @param decompileJava if **jadx** needs to decompile the APK.
      */
     export async function decodeAPK(
         apkFilePath: string,
-        apktoolArgs: string[],
-        decompileJava: boolean
+        projectDir: string,
+        apktoolArgs: string[]
     ): Promise<void> {
         const extensionConfig = vscode.workspace.getConfiguration(
             extensionConfigName
         );
         const apktoolPath = extensionConfig.get("apktoolPath");
         const apkFileName = path.basename(apkFilePath);
-        const initializeGit = extensionConfig.get("initDecodedDirAsGit");
-        let apkDecodeDir = path.join(
-            path.dirname(apkFilePath),
-            path.parse(apkFilePath).name
-        );
-        // don't delete the existing dir if it does exist
-        while (fs.existsSync(apkDecodeDir)) {
-            apkDecodeDir = apkDecodeDir + "1";
-        }
-        const report = `Decoding ${apkFileName} into ${apkDecodeDir}`;
+
+        const report = `Decoding ${apkFileName} into ${projectDir}`;
         let args = [
             "-jar",
             String(apktoolPath),
             "d",
             apkFilePath,
             "-o",
-            apkDecodeDir,
+            projectDir,
         ];
         if (apktoolArgs && apktoolArgs.length > 0) {
             args = args.concat(apktoolArgs);
         }
-        const shouldExist = path.join(apkDecodeDir, "apktool.yml");
+        const shouldExist = path.join(projectDir, "apktool.yml");
         await executeProcess({
             name: "Decoding",
             report: report,
             command: "java",
             args: args,
             shouldExist: shouldExist,
-            onSuccess: async () => {
-                if (decompileJava) {
-                    await jadx.decompileAPK(
-                        apkFilePath,
-                        apkFileName,
-                        apkDecodeDir
-                    );
-                }
-
-                // Initialize decoded dir as git repo
-                if (initializeGit) {
-                    await initGitDir(apkDecodeDir, "Initial APK decode");
-                }
-
-                // open apkDecodeDir in a new vs code window
-                if (!process.env["TEST"]) {
-                    await vscode.commands.executeCommand(
-                        "vscode.openFolder",
-                        vscode.Uri.file(apkDecodeDir),
-                        true
-                    );
-                }
-            },
         });
     }
 
@@ -383,13 +358,13 @@ export namespace jadx {
     /**
      * Decompile the APK file to Java source using **Jadx**.
      * @param apkFilePath path of the APK file.
-     * @param apkFileName name of the APK file.
-     * @param apkDecodeDir dir where the APK file was decoded.
+     * @param projectDir project output dir for decode/decompile/analysis.
+     * @param jadxArgs array of additional args passed to **Jadx**.
      */
     export async function decompileAPK(
         apkFilePath: string,
-        apkFileName: string,
-        apkDecodeDir: string
+        projectDir: string,
+        jadxArgs: string[]
     ): Promise<void> {
         const extensionConfig = vscode.workspace.getConfiguration(
             extensionConfigName
@@ -399,9 +374,13 @@ export namespace jadx {
             process.platform.startsWith("win") ? ".bat" : ""
         }`;
         const jadxPath = path.join(String(jadxDirPath), "bin", jadxExeName);
-        const apkDecompileDir = path.join(apkDecodeDir, "java_src");
+        const apkDecompileDir = path.join(projectDir, "java_src");
+        const apkFileName = path.basename(apkFilePath);
         const report = `Decompiling ${apkFileName} into ${apkDecompileDir}`;
-        const args = ["-r", "-v", "-ds", apkDecompileDir, apkFilePath];
+        let args = ["-r", "-q", "-v", "-ds", apkDecompileDir, apkFilePath];
+        if (jadxArgs && jadxArgs.length > 0) {
+            args = jadxArgs.concat(args);
+        }
         await executeProcess({
             name: "Decompiling",
             report: report,

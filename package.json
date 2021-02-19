@@ -1,20 +1,21 @@
 {
     "name": "apklab",
-    "displayName": "APK Lab",
-    "description": "Android Reverse Engineering WorkBench",
+    "displayName": "APKLab",
+    "description": "Android Reverse-Engineering WorkBench",
     "publisher": "Surendrajat",
-    "version": "1.2.0",
+    "version": "1.3.1",
     "license": "SEE LICENSE IN LICENSE",
     "icon": "assets/icon.png",
     "engines": {
         "vscode": "^1.45.0"
     },
+    "homepage": "https://apklab.surendrajat.xyz",
     "repository": {
         "type": "git",
-        "url": "https://github.com/Surendrajat/APKLab.git"
+        "url": "https://github.com/APKLab/APKLab.git"
     },
     "bugs": {
-        "url": "https://github.com/Surendrajat/APKLab/issues"
+        "url": "https://github.com/APKLab/APKLab/issues"
     },
     "extensionDependencies": [
         "LoyieKing.smalise"
@@ -42,6 +43,7 @@
     ],
     "activationEvents": [
         "workspaceContains:apktool.yml",
+        "workspaceContains:quarkReport.json",
         "onCommand:apklab.openApkFile",
         "onCommand:apklab.emptyFrameworkDir"
     ],
@@ -67,6 +69,10 @@
             {
                 "command": "apklab.emptyFrameworkDir",
                 "title": "APKLab: Empty ApkTool Framework Dir"
+            },
+            {
+                "command": "apklab.quarkReport",
+                "title": "APKLab: Show Quark analysis report"
             }
         ],
         "menus": {
@@ -82,6 +88,10 @@
                 {
                     "command": "apklab.patchApkForHttps",
                     "when": "false"
+                },
+                {
+                    "command": "apklab.quarkReport",
+                    "when": "false"
                 }
             ],
             "editor/context": [
@@ -94,6 +104,11 @@
                     "command": "apklab.patchApkForHttps",
                     "when": "resourceFilename == apktool.yml",
                     "group": "navigation"
+                },
+                {
+                    "command": "apklab.quarkReport",
+                    "when": "resourceFilename == quarkReport.json",
+                    "group": "navigation"
                 }
             ],
             "editor/title": [
@@ -104,6 +119,10 @@
                 {
                     "command": "apklab.patchApkForHttps",
                     "when": "resourceFilename == apktool.yml"
+                },
+                {
+                    "command": "apklab.quarkReport",
+                    "when": "resourceFilename == quarkReport.json"
                 }
             ],
             "explorer/context": [
@@ -121,11 +140,16 @@
                     "command": "apklab.patchApkForHttps",
                     "when": "resourceFilename == apktool.yml",
                     "group": "navigation"
+                },
+                {
+                    "command": "apklab.quarkReport",
+                    "when": "resourceFilename == quarkReport.json",
+                    "group": "navigation"
                 }
             ]
         },
         "configuration": {
-            "title": "APK Lab",
+            "title": "APKLab",
             "properties": {
                 "apklab.apktoolPath": {
                     "type": "string",
@@ -162,16 +186,16 @@
                     "default": "",
                     "markdownDescription": "Put the **password** of the used key in the keystore here."
                 },
-                "apklab.initDecodedDirAsGit": {
+                "apklab.initProjectDirAsGit": {
                     "type": "boolean",
                     "default": "true",
-                    "markdownDescription": "Initialize decoded APK directory as **Git** repository."
+                    "markdownDescription": "Initialize project output directory as **Git** repository."
                 }
             }
         }
     },
     "scripts": {
-        "vscode:prepublish": "npm run clean && webpack --mode production",
+        "vscode:prepublish": "npm run clean && webpack --mode production --devtool hidden-source-map",
         "compile": "tsc -p ./",
         "lint": "eslint src --ext ts && prettier --check .",
         "fix": "prettier --write . && eslint src --ext ts --fix",
@@ -179,31 +203,31 @@
         "pretest": "npm run compile",
         "test": "node ./out/test/runTest.js",
         "package": "vsce package",
-        "watch": "webpack --mode development --watch"
+        "watch": "webpack --watch"
     },
     "devDependencies": {
         "@types/glob": "^7.1.3",
         "@types/listr": "^0.14.2",
-        "@types/mocha": "^8.2.0",
-        "@types/node": "^14.14.20",
+        "@types/mocha": "^8.2.1",
+        "@types/node": "^14.14.28",
         "@types/vscode": "^1.45.0",
-        "@typescript-eslint/eslint-plugin": "^4.12.0",
-        "@typescript-eslint/parser": "^4.12.0",
-        "eslint": "^7.17.0",
-        "eslint-config-prettier": "^7.1.0",
+        "@typescript-eslint/eslint-plugin": "^4.15.1",
+        "@typescript-eslint/parser": "^4.15.1",
+        "eslint": "^7.20.0",
+        "eslint-config-prettier": "^7.2.0",
         "eslint-plugin-import": "^2.22.1",
         "glob": "^7.1.6",
-        "mocha": "^8.2.1",
+        "mocha": "^8.3.0",
         "prettier": "^2.2.1",
-        "ts-loader": "^8.0.10",
-        "typescript": "^4.1.3",
-        "vsce": "^1.83.0",
-        "vscode-test": "^1.4.1",
-        "webpack": "^5.4.0",
-        "webpack-cli": "^4.2.0"
+        "ts-loader": "^8.0.17",
+        "typescript": "^4.1.5",
+        "vsce": "^1.85.0",
+        "vscode-test": "^1.5.1",
+        "webpack": "^5.23.0",
+        "webpack-cli": "^4.5.0"
     },
     "dependencies": {
-        "apk-mitm": "^0.10.1",
+        "apk-mitm": "^0.11.1",
         "extract-zip": "^2.0.1"
     }
 }
