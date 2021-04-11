@@ -3,8 +3,10 @@ import * as fs from "fs";
 import * as child_process from "child_process";
 import * as vscode from "vscode";
 import * as glob from "glob";
-import { outputChannel } from "./common";
-import { quarkSummaryReportHTML } from "./quark_html";
+import { outputChannel } from "../data/constants";
+import { quarkSummaryReportHTML } from "../utils/quark-html";
+import { executeProcess } from "../utils/executor";
+
 /**
  * Read and parse the JSON file of quark analysis report.
  * @param reportPath The path of the `quarkReport.json` file.
@@ -284,55 +286,15 @@ export namespace Quark {
         apkFilePath: string,
         projectDir: string
     ): Promise<void> {
-        const reportPath = path.join(projectDir, `quarkReport.json`);
-        const script = `quark -a ${apkFilePath} -o ${reportPath}`;
+        const jsonReportPath = path.join(projectDir, `quarkReport.json`);
 
-        await vscode.window.withProgress(
-            {
-                location: vscode.ProgressLocation.Notification,
-                title: "Quark analysis",
-                cancellable: true,
-            },
-            (_, token) => {
-                return new Promise<void>((resolve) => {
-                    const quarkProcess = child_process.exec(script);
-
-                    if (quarkProcess.stderr) {
-                        quarkProcess.stderr.on("data", async (data) => {
-                            if (data.includes("Error:")) {
-                                outputChannel.append(`Error: ${data}`);
-                                vscode.window.showErrorMessage(
-                                    "APKLab: Quark analysis failed!"
-                                );
-                                resolve();
-                            }
-                        });
-                    }
-
-                    quarkProcess.on("error", async (code) => {
-                        outputChannel.appendLine(`Error: ${code}`);
-                        vscode.window.showErrorMessage(
-                            "APKLab: Quark analysis failed!"
-                        );
-                        resolve();
-                    });
-
-                    quarkProcess.on("close", async () => {
-                        if (fs.existsSync(reportPath)) {
-                            showSummaryReport(reportPath);
-                        }
-                        resolve();
-                    });
-
-                    token.onCancellationRequested(() => {
-                        outputChannel.appendLine(
-                            `User canceled the Quark analysis`
-                        );
-                        quarkProcess.kill();
-                    });
-                });
-            }
-        );
+        await executeProcess({
+            name: "Quark analysis",
+            report: `Analyzing ${apkFilePath}`,
+            command: "quark",
+            args: ["-a", apkFilePath, "-o", jsonReportPath],
+            shouldExist: jsonReportPath,
+        });
     }
 
     /**
@@ -341,7 +303,7 @@ export namespace Quark {
      */
     export async function showSummaryReport(reportPath: string): Promise<void> {
         const projectDir = path.dirname(reportPath);
-        const report: any = parseReport(reportPath);
+        const report: { [key: string]: any } = parseReport(reportPath);
 
         await vscode.commands.executeCommand(
             "workbench.action.editorLayoutTwoColumns"
